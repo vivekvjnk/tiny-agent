@@ -1,8 +1,34 @@
+# Hand-rolled build dir (legacy, kept for any in-flight bare-make users)
 build/
+
+# Object files
 *.o
+*.a
+
+# Autotools generated
+Makefile
 Makefile.in
 configure
+config.h
+config.h.in
+config.log
+config.status
+
+# Autoreconf --force backup files (and any editor backups)
+*~
 aclocal.m4
 autom4te.cache/
+build-aux/
+m4/
+stamp-h1
 .deps/
 .libs/
+
+# Built binary
+pty_test
+
+# Dist tarballs and distcheck temp dirs
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+tiny-agent-*/
