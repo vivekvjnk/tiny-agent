@@ -129,7 +129,9 @@ Next step:
 
 ## Thoughts 
 
-Since SIMD instructions rely heavily on the exact memory locations of the input data, we have to make sure all operands of the single SIMD is placed in contiguous memory locations. 
+"Since SIMD instructions rely heavily on the exact memory locations of the input data, we have to make sure all operands of the single SIMD is placed in contiguous memory locations."
+- *Revisit thought*: Do we really have to do that? Yes, SIMD relies heavily on exact memory locations of the input data. But it does not impose the memory alignment constraint. Only requirement is that the data can be loaded into vector registers.
+
 `(flags & required\_flags) == required\_flags && payload\_size >= min\_size\` : this operation can be split into n assembly level operations:
 
 1. Bitwise and; SIMD parallelizable; Hence all flags from all messages should be contiguous
@@ -162,3 +164,17 @@ struct mem_aligned_block {
 
 - Still, contiguous data-structures doesn't inherently ensure contiguous memory allocation. 
 We need to design a simple function to get aligned contiguous memory allocation. May be a simple wrapper over malloc.
+
+- Re-orientation 2: There is no requirement of memory aligned blocks for SIMD. Only constraint is that the data can be loaded to vector registers. Memory aligned data makes SIMD instructions more efficient(or convinient). But it is not a requirement.
+
+Then what are the requirements on the data to make sure it can be loaded to vector registers? 
+
+## SIMD Vector-Load Prerequisites
+
+| # | Prerequisite             | Simple explanation                                                                                       | Example                                 | Counter-example                                                              |
+| - | ------------------------ | -------------------------------------------------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------- |
+| 1 | **Compatible datatype**  | SIMD instruction must support the element type/operation.                                                | `uint32_t[4]` → one 128-bit NEON vector | Unsupported datatype/operation for the chosen SIMD instruction               |
+| 2 | **SIMD-friendly layout** | Values processed together should be efficiently accessible, typically contiguous.                        | `flags[0..3]` → one vector load         | `AoS`: `msg[0].flags, msg[1].flags...` separated by other fields             |
+| 3 | **Tail handling**        | If `N` isn't divisible by SIMD lane count, remaining elements need scalar or another safe handling path. | `N=14` → 12 SIMD + 2 scalar             | Blindly loading 4 elements when only 2 remain → invalid/out-of-bounds access |
+
+> **Memory alignment is not a fundamental prerequisite for SIMD/vector loading.** It is a separate optimization consideration.
