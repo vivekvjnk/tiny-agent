@@ -47,7 +47,7 @@ We already have raspbian os in our pi.
     - .dts is the human readable source text file of the device tree
     - .dts: device tree source/string, .dtb: device tree binary
 
-[PMIC and Hardware Power-on Reset(POR) State Machine](exploration/concepts/ARM-Cortex-A-Boot-Process.md)
+[PMIC and Hardware Power-on Reset(POR) State Machine](exploration/concepts/HUB_ARM-Cortex-A-Boot-Process.md)
 Before BL1 even runs, hardware power rail sequencing must succeed:
 
 * **Rail Sequencing:** PMIC regulators ramp in a strict hardware sequence: $V_{DD\_CORE} \rightarrow V_{DD\_MEM} \rightarrow V_{DD\_IO}$ to prevent CMOS latch-up.
@@ -129,7 +129,7 @@ Exception Levels for CPU registers : Document under Exception Level document
 |BL33  |Bootloader (U-Boot/Barebox)|EL2 (Non-Secure)    |Main DRAM       |Network/USB boot, parses DTB, loads Kernel image into RAM |
 |Kernel|Linux Kernel (Image)       |EL1 (Non-Secure)    |Main DRAM       |Virtual memory management, driver initialization          |
 
-You can find detailed documentation on each stage of the boot process [here](exploration/concepts/ARM-Cortex-A-Boot-Process.md)
+You can find detailed documentation on each stage of the boot process [here](exploration/concepts/HUB_ARM-Cortex-A-Boot-Process.md)
 
 Few interesting questions from todays exploration are captured under [boot.md file](exploration/questions/boot.md)
 

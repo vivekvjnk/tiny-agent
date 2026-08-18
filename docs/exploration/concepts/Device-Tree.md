@@ -37,6 +37,12 @@ When `.dts` source files are compiled using `dtc` (Device Tree Compiler), they p
 | `version` | `uint32_t` | FDT specification version (typically `17`). |
 | `boot_cpuid_phys` | `uint32_t` | Physical CPU ID (`MPIDR`) of the primary boot core. |
 
+### Why FDTs are Vital 
+
+- Hardware Decoupling: Separation of concerns means you do not have to rebuild your entire OS kernel just because a resistor or chip changed on the physical board. 
+- No Firmware Queries: The binary structure is self-contained and pointerless, requiring zero system firmware callbacks to resolve properties. 
+- Overlays: Modern devices like the Raspberry Pi or Android phones utilize Device Tree Overlays (DTO) to dynamically modify the central hardware blueprint when add-on daughterboards or custom peripherals plug in. [9, 14]  
+
 ---
 
 ## 2. Address Translation & Ranges Mapping
