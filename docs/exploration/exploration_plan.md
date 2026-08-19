@@ -1,6 +1,8 @@
 
 ### 7-Day Exploration plan
 
+* **Core Study Sprint Reference:** [C/C++ Core Systems & Pointers Hub](c_c++/hub_concepts.md)
+
 | Day | Primary Focus Area | Hands-On Exercise | Key Theoretical Concept |
 | --- | --- | --- | --- |
 | **Day 1** | SoC Boot Sequence & Power Rails | RPi 4 UART / U-Boot log tracing | POR, PMIC rail sequencing, TF-A (BL1/BL2/BL31) |
@@ -9,7 +11,7 @@
 | **Day 4** | PCIe Subsystem & BAR Mapping | GCP VM (QEMU PCIe setup) | Config Space, BAR ioremap, MSI-X, Doorbell registers |
 | **Day 5** | Google Gasket Framework & Queues | Code review: `drivers/staging/gasket` | Submission/Completion ring buffers, `ioctl`, Eventfd |
 | **Day 6** | Scatter-Gather DMA & Memory Pinning | C ring buffer & DMA mapping stub | `pin_user_pages`, `dma_map_sg`, Cache coherency |
-| **Day 7** | Systems C, Barriers | Write lock-free SPSC queue in C | `dmb`/`dsb`/`isb`, volatile, memory barriers |
+| **Day 7** | Systems C, Barriers | Write lock-free SPSC queue in C | `dmb`/`dsb`/`isb`, [volatile & memory qualifiers](c_c++/pointers/volatile.md), memory barriers |
 
 ---
 

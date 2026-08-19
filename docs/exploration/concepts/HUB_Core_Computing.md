@@ -14,3 +14,7 @@
 # PCIe
 - PCIe bypass von-neumann bottleneck throgh direct interconnects
 
+# C/C++ Systems & Memory Architecture
+- [C/C++ Concepts & Pointers Hub](../c_c++/hub_concepts.md)
+
+
