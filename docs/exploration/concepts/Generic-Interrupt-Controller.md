@@ -45,18 +45,10 @@ For driver and Device Tree (`DTS`) configuration, interrupts are classified into
 
 | Type | Name | ID Range | Scope | Trigger Type | Common Firmware Use Case |
 | --- | --- | --- | --- | --- | --- |
-| **SGI** | Software Generated Interrupt | `0 - 15` | Core-to-Core | Software write | Inter-Processor Communication (IPI / SMP resched) 
-
- |
-| **PPI** | Private Peripheral Interrupt | `16 - 31` | Per-Core Local | Edge / Level | Architectural Timers, PMUs, Local Watchdogs 
-
- |
-| **SPI** | Shared Peripheral Interrupt | `32 - 1019` | System Wide | Edge / Level | UART, DMA Controllers, PCIe Endpoints, I2C 
-
- |
-| **LPI** | Locality-specific Peripheral | `8192+` | System Wide | Message-Signaled | PCIe MSI / MSI-X via Interrupt Translation Service (ITS) 
-
- |
+| **SGI** | Software Generated Interrupt | `0 - 15` | Core-to-Core | Software write | Inter-Processor Communication (IPI / SMP resched) |
+| **PPI** | Private Peripheral Interrupt | `16 - 31` | Per-Core Local | Edge / Level | Architectural Timers, PMUs, Local Watchdogs |
+| **SPI** | Shared Peripheral Interrupt | `32 - 1019` | System Wide | Edge / Level | UART, DMA Controllers, PCIe Endpoints, I2C |
+| **LPI** | Locality-specific Peripheral | `8192+` | System Wide | Message-Signaled | PCIe MSI / MSI-X via Interrupt Translation Service (ITS) |
 
 ---
 
