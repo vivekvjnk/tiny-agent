@@ -79,6 +79,7 @@ bool invariants_validator(BootStage bootstage)
     KERNEL      1           1           0       1       0
 
     Apply kmap simplification on this truth table
-    */
-    
+
+    Dropping this approach. Ofcourse, K-Map would improve the raw effciency. But in this sparse set, K-Map would introduce un-necessary complexity while giving little effciency gains. So we've decided to proceed with simple switch cases. Still, we would use the above truth table as reference for implementation.
+    */   
 }
