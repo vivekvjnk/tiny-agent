@@ -488,6 +488,7 @@ s += 1; // UB! Compiler optimizations (-O3) assume this NEVER happens
 
 # Miscellaneous 
 1. **Load elision**: Process of combining multiple load statements to one through compiler optimization.
+2. **Load hoisting**: Process of moving repeated non-necessary load statements out of loops through compiler optimization.
 2. **Why CPU registers are called register files?** Register file is an array of individual registers.
 
 ### Hardware Core Architecture & Register Files
