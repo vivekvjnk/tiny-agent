@@ -4,6 +4,7 @@
 */
 
 #include <stdio.h> 
+#define MIN(a,b) ((a)<(b) ? (a) : (b))
 
 int binary_search(int array[10],int length, int search_element)
 {
@@ -46,7 +47,7 @@ int binary_search(int array[10],int length, int search_element)
 }
 
 
-int fibonacci_search(int search_item, int *array, int length)
+int fibonacci_search(int *array, int length,int search_item)
 {
     /*
         |<----------------------------- Current Window: Size F_k1 ---------------------------->|
@@ -63,7 +64,7 @@ int fibonacci_search(int search_item, int *array, int length)
     int fi_k = fi_k1 + fi_k2;
 
     // find smallest fibo number less than or equal to length
-    while(fi_k <= length){
+    while(fi_k < length){
         fi_k2 = fi_k1;
         fi_k1 = fi_k;
         fi_k = fi_k1+fi_k2;
@@ -73,14 +74,16 @@ int fibonacci_search(int search_item, int *array, int length)
     int offset = -1;
 
     while(fi_k>1){
-        int i = min(offset + fi_k2, length-1)
+        int i = MIN(offset + fi_k2, length-1);
         if(search_item > array[i]){
+            // reduce search space to right half
             offset = i;
             fi_k = fi_k1;
             fi_k1 = fi_k2;
             fi_k2 = fi_k - fi_k1;
         }
-        if(search_item < array[i]){
+        else if(search_item < array[i]){
+            // reduce search space to left half
             fi_k = fi_k2;
             fi_k1 = fi_k - fi_k2;
             fi_k2 = fi_k - fi_k1;
@@ -88,6 +91,10 @@ int fibonacci_search(int search_item, int *array, int length)
         else 
             return i;
     }
+    if (fi_k1 && offset+1< length && array[offset + 1] == search_item){
+        return offset + 1;
+    }
+    return -1;
 }
 
 int block_search(int search_item, int *array, int length){
@@ -97,8 +104,8 @@ int block_search(int search_item, int *array, int length){
 int main(){
     int list[] = {1,2,8,22,99,238,242,4789};
     int length = sizeof(list) / sizeof(int);
-    int search_element = 213;
-    int index = binary_search(list, length, search_element);
+    int search_element = 242;
+    int index = fibonacci_search(list, length, search_element);
     printf("Element found at index %d is %d", index, search_element);
 }
 
