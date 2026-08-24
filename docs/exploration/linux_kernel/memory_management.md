@@ -14,6 +14,17 @@ A process is logically divided into the following parts, known as segments:
 - *Heap*: an area from which programs can dynamically allocate extra memory.
 - *Stack*: a piece of memory that grows and shrinks as functions are called and return and that is used to allocate storage for local variables and function call linkage information.
 
+## sbrk() and brk() system calls
+- brk : Program Break; Stands for the Process(program) break point in the virtual memory layout;
+- Initially *program break* pointer points to the memory location right after un-initialized data segment(which is represented by *end*. Code can access *end* pointer by defining a end[] array at the beginning)
+- Through brk() system call, we can increase/decrease size of the heap allocation for the process
+- The call sbrk(0) returns the current setting of the program break without changing it.
+"""
+After the program break is increased, the program may access any address in
+the newly allocated area, but no physical memory pages are allocated yet. The ker-
+nel automatically allocates new physical pages on the first attempt by the process to
+access addresses in those pages.
+"""
 
 ### Doubts 
 ?. When fork() is executed by a process, does the kernel create the duplicate process with completely new memory allocation, then copy everything from parent process to duplicate?

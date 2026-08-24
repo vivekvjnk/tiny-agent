@@ -54,7 +54,7 @@ The emphasis is on **retrieval, implementation, and system-level connections**, 
 * Object lifetime
 * Dangling pointers
 
-## C Memory Model
+## [C Memory Model](docs/exploration/c_c++/general/memory_model_n_general_concepts.md)
 
 ```text
 Stack
@@ -94,8 +94,6 @@ C/C++ concepts
 Practical problems
 +
 Solutions
-+
-Rapid-fire questions
 ```
 
 ---
