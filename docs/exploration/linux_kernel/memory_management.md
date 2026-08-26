@@ -40,3 +40,47 @@ access addresses in those pages.
 - Replace them with new segments based on the code of new program
 
 ?. How virtual memory fascilitiate *shared memory* IPC? What features of virtual memory are exploited here?
+
+# Physical memory
+- Physical memory is divided into zones and nodes
+## Concept of Zones and Nodes
+- Zones are attached to nodes, nodes to CPU
+- One node per CPU
+- Each node is aware of its zones and their available memory pages
+- Non-Uniform Memory Access
+- Information is available under /proc/buddyinfo
+    - uses "buddy allocator" algorithm
+
+# Memory management in kernel 
+mm/mm_init.c
+
+- kernel code: .text section of kernel binary
+- rwdata: initialized and writable global and static variables of kernel binary
+- rodata: read-only kernel data as constants and strings
+- init: initialization code, reclaimed later
+- bss: uninitialized data
+- reserved: an overall metric for memory rseserved by/for kernel including code, data, and the physical pages(32MiB, in this case); Page table mappings reach upto 32MiB in this case
+- cma-reserved: Contiguous Memory Allocator
+
+- /proc/meminfo : info about kernel memory allocation
+    - 
+
+## measurement
+```bash
+$smem -t
+```
+
+### Capture data
+- record data in target 
+```
+smemcap > smemcap_target.tar
+```
+- plot it on host
+```
+smemcap --pie name -S smemcap_target.tar
+```
+
+## ZRAM and Swap
+- Swap: using certain area of flash as RAM
+- ZRAM: compress pages and store in a specialized area in RAM
+    - Used in MACOS
