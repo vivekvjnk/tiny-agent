@@ -83,7 +83,6 @@ struct list_head {
 ---
 
 ### **5. Trees: Device Tree Parent-Child Bus Address Translator**
-
 **Concept:** Flattened Device Tree (FDT) N-ary Tree Traversal & Memory Range Mapping
 
 **Scenario:** Drivers translate bus-local addresses to CPU physical addresses by traversing nested Flattened Device Tree nodes using parent `<ranges>` properties.
@@ -99,18 +98,12 @@ struct BusNode {
 };
 
 ```
-
-
 * Implement `std::optional<uint64_t> translate_address(const BusNode* leaf_node, uint64_t child_bus_addr)`.
 * **Rules:**
 * Walk up the tree node path from `leaf_node` to the root node (CPU Physical Space).
 
-
 * At each level, translate `child_bus_addr` to `parent_base` using matching range windows:
 
-
-
 $$\text{Parent Addr} = \text{parent\_base} + (\text{child\_addr} - \text{child\_base}) \quad \text{[cite: 2]}$$
-
 
 * If a parent node has an empty `ranges` vector, assume 1:1 identity translation. Return `std::nullopt` if the address falls outside declared range bounds.

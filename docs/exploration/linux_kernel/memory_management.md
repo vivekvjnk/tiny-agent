@@ -84,3 +84,41 @@ smemcap --pie name -S smemcap_target.tar
 - Swap: using certain area of flash as RAM
 - ZRAM: compress pages and store in a specialized area in RAM
     - Used in MACOS
+
+
+# TLB and Caches 
+
+```text 
+[ Virtual Address ]
+        │
+        ▼
+   ┌─────────┐      Miss      ┌────────────┐
+   │   TLB   ├───────────────►│ Page Table │ (Looks up physical address in RAM)
+   └────┬────┘                └─────┬──────┘
+        │ Hit                       │
+        ▼                           ▼
+ [ Physical Address ] ◄─────────────┘
+        │
+        ▼
+   ┌─────────┐      Miss      ┌────────────┐      Miss      ┌────────────┐
+   │ L1 Cache├───────────────►│ L2/L3 Cache├───────────────►│ Physical   │
+   └────┬────┘                └─────┬──────┘                │ RAM (Data) │
+        │ Hit                       │ Hit                   └────────────┘
+        ▼                           ▼
+ [ Data Delivered to CPU ] ◄────────┘
+```
+
+## MMU
+
+```text
+  ┌───────────────── CPU ─────────────────┐
+  │                                       │
+  │  ┌───────────┐      ┌──────────────┐  │                  ┌───────────┐
+  │  │ CPU Core  ├─────►│     MMU      ├──┼─────────────────►│ Main RAM  │
+  │  └───────────┘      │              │  │                  │           │
+  │   (Uses Virtual     │  ┌────────┐  │  │ (Uses Physical   │ ┌────────┐│
+  │    Addresses)       │  │  TLB   │  │  │  Addresses to    │ │  Page  ││
+  │                     │  └────────┘  │  │  fetch data)     │ │ Table  ││
+  │                     └──────────────┘  │                  │ └────────┘│
+  └───────────────────────────────────────┘                  └───────────┘
+```
