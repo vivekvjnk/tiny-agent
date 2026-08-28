@@ -72,18 +72,16 @@ Each 64-bit entry in a leaf page table contains hardware control flags and the d
 
 ```
 63       54 53  52 51          48 47                       12 11   10  9 8  7  6 5    2 1 0
-+----------+---+--+--------------+---------------------------+-------+--+--+--+----+---+---+
++-----------+---+---+--------------+---------------------------+-------+--+--+--+----+---+---+
 | Upper Attr| XN|PXN|  Reserved    | Output Physical Address   | Lower |AF|SH|AP| NS |1  |V  |
-|          |   |  |              |       [47:12]             | Attr  |  |  |  |    |   |   |
-+----------+---+--+--------------+---------------------------+-------+--+--+--+----+---+---+
+|           |   |   |              |       [47:12]             | Attr  |  |  |  |    |   |   |
++-----------+---+---+--------------+---------------------------+-------+--+--+--+----+---+---+
 
 ```
 
 | Bit / Field | Name | Hardware Function |
 | --- | --- | --- |
-| **Bit 0** | `V` (Valid) | `1` = Entry active. `0` = Unmapped address (triggers Translation Fault).
-
- |
+| **Bit 0** | `V` (Valid) | `1` = Entry active. `0` = Unmapped address (triggers Translation Fault).|
 | **Bit 1** | Table / Page | `1` = Points to a 4KB page or next-level table. `0` = Block mapping (2MB/1GB). |
 | **Bits [5:2]** | `AttrIndx` | Index into Memory Attribute Indirection Register (`MAIR_EL1`) defining cacheability (Normal Memory vs. Device MMIO). |
 | **Bits [7:6]** | `AP` | **Access Permissions:** `00` (RW EL1), `01` (RW EL1/EL0), `10` (RO EL1), `11` (RO EL1/EL0). |
