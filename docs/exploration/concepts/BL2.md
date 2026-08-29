@@ -30,7 +30,7 @@
 | **Execution Context** | Runs out of small, reliable **On-Chip SRAM** (typically 128 KB – 512 KB). |
 | **Privilege Level** | Secure EL3 or Secure EL1 (AArch64 ARM Trusted Firmware).|
 | **HW State at Entry** | MMU & D-Caches disabled; Clocks & PMIC core rails stabilized.|
-| **Primary Mandates** | <br>**1.** DDR PHY Initialization & Training (Read/Write leveling, $V_{\text{REF}}$ calibration).<br>**2.** Secure Boot Authentication (Validates RSA/ECC signatures against ROTPK) .<br>**3.** Downstream Binary Loading (Fetches BL31, BL32, BL33 into DRAM).|
+| **Primary Mandates** | <br>**1.** DDR PHY Initialization & Training (Read/Write leveling, $V_{\text{REF}}$ calibration).<br> **2.** Secure Boot Authentication (Validates RSA/ECC signatures against ROTPK) .<br>**3.** Downstream Binary Loading (Fetches BL31, BL32, BL33 into DRAM).|
 | **Handoff Target** | Transfers control back to **BL31** (Secure EL3 Runtime Monitor).|
 
 ---
