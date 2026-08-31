@@ -118,3 +118,20 @@ int count = dma_map_sg(dev, sg_list, nents, DMA_BIDIRECTIONAL);
 **Q4: What is the difference between Top Half and Bottom Half interrupt handling in a BSP driver?**
 
 * *Answer:* Top Half (ISR) executes with interrupts disabled; it must be ultra-fast, acknowledging hardware registers, clearing the interrupt line, and scheduling a bottom half. The Bottom Half (`threaded_irq` or `tasklet`/`workqueue`) processes command completions, updates software queue indices, and notifies user-space without blocking the core.
+
+
+
+# 31-08-2026 
+- Explore TI AM335x SOC
+    - Explore ARM architecture features from the perspective of this SOC
+    - AXI bus 
+    - Exception levels, privilege switching, MMU, cache management
+    - DMA, I2C/PMBus
+- PCIe Base Address Register Mapping
+
+- DDR training stall in BL2 
+- PCIe link training failures 
+- CPU lock up in default exception handler
+- Hardware Software register contract : RAL(Register Abstraction Layer)
+- lightweight, deterministic C tests that exercise memory interfaces, AXI bus arbitration, and hardware interrupt pipelines without an OS.
+

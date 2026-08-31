@@ -1,7 +1,3 @@
-This execution plan for **Session 1** focuses on mastering ARM64 architectural transitions, early exception context, and kernel handoff invariants.
-
----
-
 # Phase 1: Environment Spin-Up & Base State Verification
 
 Run QEMU with a frozen CPU state to attach GDB and verify the CPU reset vector and architectural state before executing any instructions.
