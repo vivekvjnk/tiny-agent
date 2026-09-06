@@ -1,7 +1,19 @@
 
-### 7-Day Exploration plan
+# 7-Day Systems Engineering & Platform Exploration Plan
 
-* **Core Study Sprint Reference:** [C/C++ Core Systems & Pointers Hub](c_c++/hub_concepts.md)
+[← Back to Exploration Master Index](README.md)
+
+### Master Knowledge Network Hub Navigation
+* **SoC Boot & Silicon Bringup:** [Cortex-A Boot Hub](concepts/HUB_ARM-Cortex-A-Boot-Process.md)
+* **Core Computing & Memory:** [Core Computing Hub](concepts/HUB_Core_Computing.md)
+* **Linux Kernel Internals:** [Linux Kernel Hub](linux_kernel/hub_kernel.md)
+* **Systems C/C++ & Concurrency:** [Systems C/C++ Hub](c_c++/hub_concepts.md)
+* **Compiler Optimizations:** [Compiler Optimizations Hub](compiler_optimization_techniques/hub_compiler_optimization_concepts.md)
+* **Solved Engineering Problems:** [Solved Problems Hub](solved-problems/README.md)
+
+---
+
+### 7-Day Study Sprint Matrix
 
 | Day | Primary Focus Area | Hands-On Exercise | Key Theoretical Concept |
 | --- | --- | --- | --- |

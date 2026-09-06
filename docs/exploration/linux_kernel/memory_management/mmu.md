@@ -1,1 +1,0 @@
-![CPU memory model](image.png)

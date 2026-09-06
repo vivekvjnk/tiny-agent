@@ -1,384 +1,106 @@
-# Core Systems Study Sprint
+# Master Architecture Hub: Systems C/C++, Pointers, Memory & Concurrency
 
-[← Back to Exploration Plan](../exploration_plan.md)
+Welcome to the **Systems C/C++, Memory & Concurrency Master Architecture Hub**. This master document synthesizes C memory semantics, qualifier mechanics (`const`, `volatile`, `restrict`, `static`), pointer declaration parsing, modern C++ abstractions (templates, vectors), hardware side effects, lock-free memory ordering, and practical systems data structures.
 
-A short, high-intensity orientation plan for consolidating C/C++, embedded systems, operating systems, and ARM platform knowledge.
-
-## Goal
-
-Build a coherent mental model spanning:
-
-```text
-C/C++
-  ↓
-Memory & Concurrency
-  ↓
-Operating Systems
-  ↓
-ARM Architecture
-  ↓
-SoC & Memory Hierarchy
-  ↓
-Boot
-  ↓
-Kernel
-  ↓
-Drivers
-  ↓
-Hardware & Debugging
-````
-
-The emphasis is on **retrieval, implementation, and system-level connections**, not broad topic accumulation.
+It bridges language semantics with machine assembly, hardware registers, and CPU memory ordering behavior.
 
 ---
 
-# Day 1 — C Memory & Pointers
+## 1. Systems C/C++ Knowledge Architecture Map
 
-## [Pointers Hub](pointers/hub_concepts.md)
-
-### Detailed Topic Guides
-* [Pointer Declaration Parsing](pointers/pointer_declaration_parsing.md)
-* [`const` Qualifier](pointers/const.md)
-* [`volatile` Qualifier](pointers/volatile.md)
-* [`restrict` Qualifier](pointers/restrict.md)
-* [`static` Keyword](pointers/static.md)
-
-### Key Pointer Concepts
-* Pointer arithmetic
-* Arrays vs pointers
-* Pointer-to-pointer
-* `void *`
-* Function pointers
-* Alignment
-* Aliasing
-* Object lifetime
-* Dangling pointers
-
-## [C Memory Model](docs/exploration/c_c++/general/memory_model_n_general_concepts.md)
-
-```text
-Stack
-Heap
-Text / Code
-.rodata
-.data
-.bss
 ```
-
-Understand:
-
-* Scope
-* Linkage
-* Storage duration
-* Lifetime
-* Ownership
-
-## Bit Manipulation
-
-* Masks
-* Set / clear / toggle
-* Bit extraction
-* Bit fields
-* Integer promotion
-* Signed vs unsigned behavior
-* Endianness
-* Overflow behavior
-
-## Output
-
-Create or refine:
-
-```text
-C/C++ concepts
-+
-Practical problems
-+
-Solutions
+ +---------------------------------------------------------------------------------------------------+
+ | 1. C MEMORY MODEL, QUALIFIERS & POINTER DYNAMICS                                                  |
+ |   • Standard Memory Segments: Stack, Heap, Text, .rodata, .data, .bss                             |
+ |   • Type Qualifiers: `const`, `volatile` (MMIO/ISRs), `restrict` (Aliasing), `static` (Linkage)   |
+ |   • Pointer Mechanics: Right-Left Rule Parsing, Function Pointers, Alignment, Side Effects        |
+ |     ├─► Deep Dive: [Pointers Master Hub](pointers/hub_concepts.md)                                |
+ |     ├─► Deep Dive: [C Memory Model Specification](general/memory_model_n_general_concepts.md)    |
+ |     ├─► Deep Dive: [Pointer Declaration Parsing Reference](pointers/pointer_declaration_parsing.md)|
+ |     ├─► Deep Dive: [Hardware Side Effects in C](side_effects.md)                                 |
+ |     └─► Deep Dive: [GCC Standard Library References](useful_references.md)                      |
+ +---------------------------------------------------------------------------------------------------+
+                                                   │
+                                                   ▼
+ +---------------------------------------------------------------------------------------------------+
+ | 2. MODERN C++ SYSTEMS CONCEPTS & TEMPLATES                                                        |
+ |   • Template Metaprogramming & Compile-Time Code Synthesis                                        |
+ |   • Dynamic Containers & Cache Locality (`std::vector`)                                           |
+ |     ├─► Deep Dive: [C++ Templates Guide](cpp_concepts/templates.md)                               |
+ |     └─► Deep Dive: [C++ Vectors Guide](cpp_concepts/vectors.md)                                   |
+ +---------------------------------------------------------------------------------------------------+
+                                                   │
+                                                   ▼
+ +---------------------------------------------------------------------------------------------------+
+ | 3. LOCK-FREE CONCURRENCY & MEMORY ORDERING BARRIERS                                              |
+ |   • CPU Memory Buffers: Store Buffer (Fast Store & Delayed Drain), Invalidation Queues            |
+ |   • Barrier Semantics: Release-Store (`memory_order_release`) & Acquire-Load (`memory_order_acquire`)|
+ |   • Hardware Instruction Lowering: `STLR`/`LDAR` (ARM64) vs TSO (x86)                            |
+ |     ├─► Deep Dive: [Fast Store & Delayed Drain](../concepts/fast_store_delayed_drain.md)       |
+ |     ├─► Deep Dive: [Store-Load Reordering Mechanics](../concepts/store_load_reordering.md)     |
+ |     └─► Deep Dive: [Release-Store & Acquire-Load Barriers](../concepts/release_store_n_acquire_load.md)
+ +---------------------------------------------------------------------------------------------------+
+                                                   │
+                                                   ▼
+ +---------------------------------------------------------------------------------------------------+
+ | 4. LOW-LEVEL DATA STRUCTURES & EMBEDDED CODING                                                    |
+ |   • Bit Manipulation: Atomic Bit Clearing/Setting, Ring Buffer Masking, Register Drivers          |
+ |   • Intrusive RCU Lists: `list_head` unlinking with lockless readers & grace period               |
+ |   • Interrupt Stack Frames & Doorbell Hardware Queues (Lock-free SPSC Ring Buffer)               |
+ |   • Lock-free Hash Tables (Open Addressing) & Device Tree Address Range Translators               |
+ |     ├─► Deep Dive: [Bit Manipulation & Register Engineering](code/bit_manipulation/readme.md)    |
+ |     ├─► Deep Dive: [Lock-Free Data Structures & RCU List Engine](code/linked_lists/readme.md)   |
+ |     ├─► Deep Dive: [S1: Intrusive Linked Lists & RCU](code/linked_lists/s1/core_concepts.md)     |
+ |     ├─► Deep Dive: [S2: Hardware Interrupt Stack Frames](code/linked_lists/s2/concepts.md)       |
+ |     ├─► Deep Dive: [S3: Lock-Free SPSC Ring Buffer Queue](code/linked_lists/s3/concepts.md)      |
+ |     ├─► Deep Dive: [S4: Atomic CAS Hash Table](code/linked_lists/s4/concepts.md)                  |
+ |     └─► Deep Dive: [S5: Device Tree Bus Address Range Translator](code/linked_lists/s5/concepts.md)
+ +---------------------------------------------------------------------------------------------------+
 ```
 
 ---
 
-# Day 2 — C++ & Concurrency
+## 2. Core Qualifier & Language Semantics Matrix
 
-## C++
-
-### Object Model
-
-* Constructors / destructors
-* RAII
-* Stack vs heap objects
-* Copy semantics
-* Move semantics
-* Rule of 0 / 3 / 5
-
-### Polymorphism
-
-* Virtual functions
-* vtable concept
-* Pure virtual functions
-* Object slicing
-* Compile-time vs runtime polymorphism
-
-### Resource Management
-
-* `std::unique_ptr`
-* `std::shared_ptr`
-* `std::weak_ptr`
-* Ownership semantics
-* Runtime cost
-
-## Concurrency
-
-* Race conditions
-* Critical sections
-* Mutexes
-* Semaphores
-* Spinlocks
-* Atomics
-* Memory ordering
-* Deadlock
-* Priority inversion
-
-## Embedded Synchronization
-
-```text
-ISR ↔ Thread
-DMA ↔ CPU
-Producer ↔ Consumer
-Shared memory
-```
-
-Understand when `volatile` is insufficient.
+| Qualifier / Keyword | Primary Hardware / Compiler Purpose | Low-Level Machine Effect | Failure / Risk if Omitted | Detailed Reference |
+| --- | --- | --- | --- | --- |
+| **`volatile`** | Inhibits compiler optimization / reordering. | Forces every load/store to issue an actual CPU bus transaction. | Compiler elides loops or caches register reads in CPU registers during MMIO / ISR polling. | [Volatile Reference](pointers/volatile.md) |
+| **`restrict`** | Asserts pointer non-aliasing to compiler. | Enables vectorization & load/store reordering across distinct pointers. | Missed SIMD optimizations and redundant memory re-loads. | [Restrict Reference](pointers/restrict.md) |
+| **`const`** | Asserts read-only intent / immutable memory. | Places global symbols into `.rodata` segment (often flash/ROM). | Runtime memory fault on write or unauthorized mutation. | [Const Reference](pointers/const.md) |
+| **`static`** | Controls linkage (internal) or storage duration (lifetime). | Retains symbol address in `.data`/`.bss` across function calls; hides symbol from linker. | Symbol pollution or stack variable destruction across function returns. | [Static Reference](pointers/static.md) |
 
 ---
 
-# Day 3 — Coding, OS & Embedded Linux
+## 3. Low-Level Concurrency & Hardware Barriers Summary
 
-## Coding
+When multi-threading in bare-metal C or Linux drivers, `volatile` is insufficient to prevent CPU out-of-order execution across cores. Explicit memory barriers or atomic primitives are required:
 
-Prioritize:
-
-```text
-Arrays
-Strings
-Pointers
-Linked Lists
-Stacks
-Queues
-Hash Tables
-Trees
-Bit Manipulation
-```
-
-For every problem:
-
-```text
-Clarify
-  ↓
-Model
-  ↓
-Brute Force
-  ↓
-Optimize
-  ↓
-Implement
-  ↓
-Test Edge Cases
-  ↓
-Analyze Complexity
-```
-
-Prefer depth over volume.
-
-## Operating Systems
-
-* Process vs thread
-* User mode vs kernel mode
-* Virtual memory
-* Page tables
-* Context switching
-* Scheduling
-* System calls
-* IPC
-* Synchronization
-
-## Embedded Linux
-
-```text
-Bootloader
-  ↓
-Kernel
-  ↓
-Device Tree
-  ↓
-Driver Probe
-  ↓
-Hardware Initialization
-  ↓
-Userspace
-```
-
-Focus on understanding the complete execution chain.
+* **Fast Store & Delayed Drain:** CPU cores write to local 1-cycle Store Buffers. Writes reach DRAM asynchronously.
+* **Release-Store (`memory_order_release`):** Flushes the local Store Buffer before publishing an update. Emits `STLR` on ARM64.
+* **Acquire-Load (`memory_order_acquire`):** Invalidates local cache lines before reading payload data. Emits `LDAR` on ARM64.
 
 ---
 
-# Day 4 — System Integration & Recall
+## 4. Master Central Index of C/C++ Systems Modules
 
-## Reconstruct the Boot Flow
-
-```text
-Reset
-  ↓
-Boot ROM
-  ↓
-Firmware / Boot Stages
-  ↓
-DRAM Initialization
-  ↓
-Bootloader
-  ↓
-Kernel
-  ↓
-Device Tree
-  ↓
-Driver Initialization
-  ↓
-Userspace
-```
-
-## Reconstruct the SoC
-
-```text
-CPU
- ↕
-Cache
- ↕
-Memory
- ↕
-Interconnect
- ↕
-PCIe / DMA / Peripherals
-```
-
-## Reconstruct the Interrupt Path
-
-```text
-Peripheral Event
-  ↓
-Interrupt Controller
-  ↓
-CPU Exception
-  ↓
-ISR
-  ↓
-Synchronization
-  ↓
-Thread / Task
-```
-
-## Rapid Recall
-
-Practice explaining concepts without notes.
-
-Suggested categories:
-
-```text
-C/C++
-Memory
-Concurrency
-Operating Systems
-ARM
-Boot
-Interrupts
-DMA
-Cache
-MMIO
-Drivers
-Debugging
-```
-
----
-
-# Study Method
-
-For every concept:
-
-```text
-Read
-  ↓
-Recall
-  ↓
-Explain
-  ↓
-Implement
-  ↓
-Test
-  ↓
-Connect
-```
-
-The objective is not to accumulate isolated notes.
-
-The objective is to build connected knowledge:
-
-```text
-Language Semantics
-        ↓
-Memory
-        ↓
-Concurrency
-        ↓
-OS
-        ↓
-Architecture
-        ↓
-Platform Software
-        ↓
-Hardware
-```
-
----
-
-# Repository Growth
-
-The study repository should progressively contain:
-
-```text
-Concept Notes
-├── Architecture
-├── Operating Systems
-├── Embedded Systems
-├── Boot
-├── Memory
-├── C
-└── C++
-
-Practical Exploration
-├── C Problems
-├── C Solutions
-├── C++ Problems
-└── C++ Solutions
-
-Cross-Linked Knowledge
-└── Concepts connected through references and navigation hubs
-```
-
----
-
-# Priority
-
-```text
-★★★★★ C/C++ Fundamentals
-★★★★★ Practical Coding
-★★★★★ Embedded Systems
-★★★★☆ Operating Systems
-★★★★☆ ARM / Platform Architecture
-★★★★☆ Knowledge Integration
-★★☆☆☆ New Topic Exploration
-```
-
-> **Prefer connected understanding over isolated knowledge.**
->
-> **Prefer recall over rereading.**
->
-> **Prefer implementation over passive familiarity.**
+1. **Pointers & Language Foundations:**
+   * [Pointers Master Hub](pointers/hub_concepts.md)
+   * [Pointer Declaration Clockwise-Spiral Parsing Algorithm](pointers/pointer_declaration_parsing.md)
+   * [C `const` Type Qualifier Architecture Reference](pointers/const.md)
+   * [C `volatile` Type Qualifier Architecture Reference](pointers/volatile.md)
+   * [C `restrict` Pointer Aliasing Reference](pointers/restrict.md)
+   * [C `static` Keyword Storage & Linkage Reference](pointers/static.md)
+   * [C Memory Model & Execution Architecture](general/memory_model_n_general_concepts.md)
+   * [Hardware Side Effects in C Expressions](side_effects.md)
+2. **C++ Systems Features:**
+   * [C++ Templates & Compile-time Metaprogramming](cpp_concepts/templates.md)
+   * [C++ Vectors & Dynamic Array Architecture](cpp_concepts/vectors.md)
+3. **Lock-Free Systems & Hardware Data Structures:**
+   * [Bit Manipulation & Hardware Register Drivers Guide](code/bit_manipulation/readme.md)
+   * [Intrusive RCU Lists, Lock-Free SPSC Ring Buffers & Hardware Translators](code/linked_lists/readme.md)
+   * [Atomic Compare-and-Swap (`atomic_compare_exchange_strong`) Guide](code/linked_lists/s4/atomic_compare_exchange.md)
+4. **Cross-Domain Master Links:**
+   * [SoC Boot Sequence & Hardware Bringup Pipeline Hub](../concepts/HUB_ARM-Cortex-A-Boot-Process.md)
+   * [Core Computing, Memory Hierarchy & Accelerators Hub](../concepts/HUB_Core_Computing.md)
+   * [Linux Kernel Architecture & Memory Management Hub](../linux_kernel/hub_kernel.md)
+   * [Compiler Optimization Techniques & Code Lowering Hub](../compiler_optimization_techniques/hub_compiler_optimization_concepts.md)

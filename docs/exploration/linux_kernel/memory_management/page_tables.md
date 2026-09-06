@@ -114,6 +114,107 @@ Because unallocated memory branches are simply represented as null descriptors i
 | **PTE** | 4 Pages | 16 KB | Each PTE page maps 512 entries ($512 \times 4\text{KB} = 2\text{MB}$). Need 2 per 4MB region. |
 | **Total Overhead** | **9 Pages** | **36 KB** | Dynamic tree allocation saves over **99.9999%** of table memory. |
 
+
+```text
+========================================================================================
+ TOP OF HIERARCHY: HARDWARE ROOT REGISTER
+========================================================================================
+ TTBRx_EL1 Register ---> Holds Physical Address of active PGD
+                         (User space uses TTBR0_EL1, Kernel uses TTBR1_EL1)
+
+========================================================================================
+ LEVEL 0: PGD (Page Global Directory)
+========================================================================================
+ [ PGD Table Node: 1 Page in RAM = 4096 bytes = 512 Descriptors (8 bytes each) ]
+ +------------------------------------------------------------------------------------+
+ | Entry 0   | Entry 1 | ... | Entry 256 (Selected by VA[47:39]) | ... | Entry 511   |
+ +----------------------------------+-------------------------------------------------+
+                                    |
+                                    +----> Points to Physical Base Address of 1 PUD Table
+                                           (1 PGD Entry covers 512 GB of Virtual Memory)
+
+========================================================================================
+ LEVEL 1: PUD (Page Upper Directory)
+========================================================================================
+ [ PUD Table Node: 1 Page in RAM = 4096 bytes = 512 Descriptors (8 bytes each) ]
+ +------------------------------------------------------------------------------------+
+ | Entry 0   | ... | Entry 32 (Selected by VA[38:30]) | ...               | Entry 511   |
+ +---------------------------+--------------------------------------------------------+
+                             |
+                             +----> Points to Physical Base Address of 1 PMD Table
+                                    (1 PUD Entry covers 1 GB of Virtual Memory)
+                                    *(Or maps a 1 GB Huge Page directly)*
+
+========================================================================================
+ LEVEL 2: PMD (Page Middle Directory)
+========================================================================================
+ [ PMD Table Node: 1 Page in RAM = 4096 bytes = 512 Descriptors (8 bytes each) ][cite: 1]
+ +------------------------------------------------------------------------------------+
+ | Entry 0   | Entry 1 | ... | Entry 4 (Selected by VA[29:21]) | ...     | Entry 511   |
+ +-------------------------------+----------------------------------------------------+
+                                 |
+                                 +----> Points to Physical Base Address of 1 PTE Table[cite: 1]
+                                        (1 PMD Entry covers 2 MB of Virtual Memory)[cite: 1]
+                                        *(Or maps a 2 MB Block Page directly)*[cite: 1]
+
+========================================================================================
+ LEVEL 3: PTE (Page Table Entry) — LEAF NODE
+========================================================================================
+ [ PTE Table Node: 1 Page in RAM = 4096 bytes = 512 Descriptors (8 bytes each) ][cite: 1]
+ +------------------------------------------------------------------------------------+
+ | Entry 0   | ... | Entry 171 (Selected by VA[20:12]) | ...             | Entry 511   |
+ +---------------------------+--------------------------------------------------------+
+                             |
+                             +----> Points to Base Physical Frame Number (PFN) in RAM[cite: 1]
+                                    (1 PTE Entry covers a single 4 KB Page Frame)[cite: 1]
+
+========================================================================================
+ BOTTOM: VIRTUAL ADDRESS BIT-SLICING (Input: 0xffff800080ab07cc)[cite: 1]
+========================================================================================
+ +-------------------+-------------------+-------------------+-------------------+----------------------+
+ | PGD Index (9 bits)| PUD Index (9 bits)| PMD Index (9 bits)| PTE Index (9 bits)| Page Offset (12 bits)|
+ |    Bits [47:39]   |    Bits [38:30]   |    Bits [29:21]   |    Bits [20:12]   |     Bits [11:0]      |
+ |     = 256 (0x100) |      = 32 (0x20)  |       = 4 (0x4)   |     = 171 (0xAB)  |      = 0x7CC         |
+ +---------+---------+---------+---------+---------+---------+---------+---------+----------+-----------+
+           |                   |                   |                   |                    |
+           v                   v                   v                   v                    v
+       Selects Entry       Selects Entry       Selects Entry       Selects Entry       Added to Physical
+      in PGD Table        in PUD Table        in PMD Table        in PTE Table        Frame Base Address[cite: 1]
+
+========================================================================================
+ DESTINATION: PHYSICAL DRAM PAGE FRAME
+========================================================================================
+ [ Physical Page Frame in RAM (4 KB) ][cite: 1]
+ +------------------------------------------------------------------------------------+
+ | Offset 0x000 ... | Target Byte Offset 0x7CC | ...                 | Offset 0xFFF   |
+ +------------------------------------------------------------------------------------+
+```
+
+Each level in the ARM64 translation hierarchy multiplies virtual memory coverage by a factor of 512, scaling from a single 4 KB physical DRAM page to the entire 256 TB virtual address space.
+
+```text
+  PGD Table (512 entries) ──► 256 TB  [Entire 48-bit Virtual Address Space]
+       │
+       ├──► PUD Table (512 entries) ──► 512 GB  [Per PGD Entry]
+             │
+             ├──► PMD Table (512 entries) ──► 1 GB  [Per PUD Entry / Huge Page]
+                   │
+                   ├──► PTE Table (512 entries) ──► 2 MB  [Per PMD Entry / Block Page]
+                         │
+                         └──► 1 PTE Entry ──► 4 KB  [Single Physical DRAM Page]
+
+```
+
 ---
 
-Would you like to proceed straight to drafting **Note 3: Virtual Memory Abstractions & Kernel Allocators** (covering `mm_struct`, `vm_area_struct`, the Buddy System, and SLUB), or would you prefer to add a practical exercise tracing virtual-to-physical translation using Linux tools like `/proc/<pid>/pagemap` first?
+| Level | Granule Unit | Calculation | Virtual Space Mapped |
+| --- | --- | --- | --- |
+| **1 PTE Entry** | Leaf Entry | $1 \times 4 \text{ KB}$ | **4 KB**<br> |
+| **1 PTE Table** | 512 PTEs | $512 \times 4 \text{ KB}$ | **2 MB**<br> |
+| **1 PMD Table** | 512 PMDs | $512 \times 2 \text{ MB}$ | **1 GB**<br> |
+| **1 PUD Table** | 512 PUDs | $512 \times 1 \text{ GB}$ | **512 GB**<br> |
+| **1 PGD Table** | 512 PGDs | $512 \times 512 \text{ GB}$ | **256 TB**<br> |
+
+**Core Takeaway**
+
+Each step up the tree adds 9 bits of address indexing ($2^9 = 512$), allowing a compact 4 KB table page at the top level to manage a massive virtual address space.
